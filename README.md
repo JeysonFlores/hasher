@@ -1,0 +1,2 @@
+# hasher
+Hash your files.
