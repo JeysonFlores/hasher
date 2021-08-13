@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Hasher
+GenericName=Hasher
+Comment=This is just a python template
+Categories=Development;
+Exec=com.github.jeysonflores.hasher
+Icon=com.github.jeysonflores.hasher
+Terminal=false
+Type=Application
+X-GNOME-Gettext-Domain=com.github.jeysonflores.hasher
+Keywords=Utility;
