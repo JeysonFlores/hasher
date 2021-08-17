@@ -12,7 +12,7 @@ from gi.repository import Gtk, Granite
 import constants as cn
 
 
-class Window(Gtk.Window):
+class MainWindow(Gtk.Window):
 
     def __init__(self):
         Gtk.Window.__init__(self)

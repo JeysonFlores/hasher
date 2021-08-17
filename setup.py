@@ -8,7 +8,7 @@ install_data = [
     ('share/icons/hicolor/128x128/apps',['data/com.github.jeysonflores.hasher.svg']),
     ('bin/hasher',['src/constants.py']),
     ('bin/hasher',['src/main.py']),
-    ('bin/hasher',['src/window.py']),
+    ('bin/hasher',['src/MainWindow.py']),
     ('bin/hasher',['src/__init__.py']),
     ('bin/hasher/locale/it_IT/LC_MESSAGES', ['src/locale/it_IT/LC_MESSAGES/hasher.mo']),
     ('bin/hasher/locale/it_IT/LC_MESSAGES', ['src/locale/it_IT/LC_MESSAGES/hasher.po'])
