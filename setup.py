@@ -9,7 +9,6 @@ install_data = [
     ('bin/hasher',['src/constants.py']),
     ('bin/hasher',['src/main.py']),
     ('bin/hasher',['src/window.py']),
-    ('bin/hasher',['src/WelcomeView.py']),
     ('bin/hasher',['src/__init__.py']),
     ('bin/hasher/locale/it_IT/LC_MESSAGES', ['src/locale/it_IT/LC_MESSAGES/hasher.mo']),
     ('bin/hasher/locale/it_IT/LC_MESSAGES', ['src/locale/it_IT/LC_MESSAGES/hasher.po'])
