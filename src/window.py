@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from typing import Tuple
-import gi, WelcomeView
+import gi
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
