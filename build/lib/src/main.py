@@ -22,7 +22,7 @@ class Application(Gtk.Application):
         granite_settings = Granite.Settings.get_default()
         gtk_settings = Gtk.Settings.get_default ()
 
-        #This snippet doesn't work
+        
         if granite_settings.get_prefers_color_scheme == Granite.SettingsColorScheme.DARK:
             gtk_settings.set_property("gtk-application-prefer-dark-theme", True)  #
 
