@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from typing import Tuple
+import hashlib
 import gi
 
 gi.require_version('Gtk', '3.0')
@@ -11,6 +11,8 @@ from gi.repository import Gtk, Granite
 
 import constants as cn
 
+BLOCK_SIZE = 65536
+file_hash = hashlib.sha256()
 
 class MainWindow(Gtk.Window):
 
@@ -34,13 +36,15 @@ class MainWindow(Gtk.Window):
 
         self.home_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0, homogeneous = True)
 
-        welcome = Granite.WidgetsWelcome (title="Welcome to Hasher", subtitle="Hash your files")
-        welcome.append ("folder-open", "Open a File", "Open a file to hash it out")
-        welcome.connect("activated", self.on_welcome_activated)
+        self.welcome = Granite.WidgetsWelcome (title="Welcome to Hasher", subtitle="Hash your files")
+        self.welcome.append ("folder-open", "Open a File", "Open a file to hash it out")
+        self.welcome.connect("activated", self.on_welcome_activated)
 
-        self.home_container.pack_start(welcome, False, False, 0)
+        self.home_container.pack_start(self.welcome, False, False, 0)
 
         self.add(self.home_container)
+
+        
 
         self.resize(600, 400)
 
@@ -60,10 +64,40 @@ class MainWindow(Gtk.Window):
             response = dialog.run()
 
             if response == Gtk.ResponseType.OK:
-                print("Open clicked")
                 print("File selected: " + dialog.get_filename())
+
+                with open(dialog.get_filename(), 'rb') as f: # Open the file to read it's bytes
+                    fb = f.read(BLOCK_SIZE) # Read from the file. Take in the amount declared above
+                    while len(fb) > 0: # While there is still data being read from the file
+                        file_hash.update(fb) # Update the hash
+                        fb = f.read(BLOCK_SIZE) # Read
+
+                print (file_hash.hexdigest())
+                self.initial_file_selected()
+
             elif response == Gtk.ResponseType.CANCEL:
                 print("Cancel clicked")
 
             dialog.destroy()
+
+    def initial_file_selected(self):
+        self.stack = Gtk.Stack()
+        self.stack.add_titled(Gtk.Label(label="Hashes Content"), "Hashes", "Hashes")
+        self.stack.add_titled(Gtk.Label(label="Compare Content"), "Compare", "Compare")
+        self.stack.add_titled(Gtk.Label(label="Verify Content"), "Verify", "Verify")
+
+        self.stack_switcher = Gtk.StackSwitcher()
+        self.stack_switcher.has_focus = False
+        self.stack_switcher.can_focus = False
+        self.stack_switcher.can_default = False
+        self.stack_switcher.receives_default = False
+        self.stack_switcher.set_stack(self.stack)
+
+
+        self.home_container.remove(self.welcome)
+        self.headerbar.set_custom_title(self.stack_switcher)
+        self.home_container.pack_start(self.stack, False, False, 1)
+        self.home_container.show_all()
+        self.headerbar.show_all()
+
 
