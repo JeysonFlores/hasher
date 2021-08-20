@@ -1,0 +1,24 @@
+#!/usr/bin/python3
+
+import os
+import sys
+
+# Get launch script dir
+launch_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+# Update sys.path to include modules
+if launch_dir == "/usr/bin":
+    modules_path = "/usr/share/com.github.jeysonflores.hasher/hasher"
+else:
+    modules_path = launch_dir + "/hasher"
+
+sys.path.insert(0, modules_path)
+
+try:
+    import src.main
+except ImportError:
+    print("Failed to import module main.py!")
+    print("Installation was assumed to be at:", modules_path)
+    sys.exit(1)
+
+src.main.start()
