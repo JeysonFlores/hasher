@@ -31,34 +31,34 @@ class MainWindow(Gtk.Window):
         hashes_content_context = self.hashes_content.get_style_context()
         hashes_content_context.add_class("uwu")
 
-        self.hashes_select_file = Gtk.Button(label="Select File") #leb
+        self.hashes_select_file = Gtk.Button(label="Select File",image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True) #leb
         hashes_select_file_context = self.hashes_select_file.get_style_context()
         hashes_select_file_context.add_class("suggested-action")
         self.hashes_content.pack_start(self.hashes_select_file, False, False, 0)
 
-        self.hashes_md5 = HashView.HashView() #leb
-        self.hashes_md5.alg_label.set_label("MD5")
-        self.hashes_content.pack_start(self.hashes_md5, False, True, 1)
+        self.hashes_alg_combo = Gtk.ComboBoxText()
 
-        self.hashes_sha1 = HashView.HashView() #leb
-        self.hashes_sha1.alg_label.set_label("SHA1")
-        self.hashes_content.pack_start(self.hashes_sha1, False, True, 2)
+        algorythms = [
+            "MD5",
+            "SHA1",
+            "SHA224",
+            "SHA256",
+            "SHA384",
+            "SHA512",
+        ]
 
-        self.hashes_sha256 = HashView.HashView() #leb
-        self.hashes_sha256.alg_label.set_label("SHA256")
-        self.hashes_content.pack_start(self.hashes_sha256, False, True, 3)
+        for algorythm in algorythms:
+            self.hashes_alg_combo.append_text(algorythm)
 
-        self.hashes_sha512 = HashView.HashView() #leb
-        self.hashes_sha512.alg_label.set_label("SHA512")
-        self.hashes_content.pack_start(self.hashes_sha512, False, True, 4)
+        self.hashes_alg_combo.set_active(0)
+        self.hashes_content.pack_start(self.hashes_alg_combo, False, True, 1)
 
-        self.hashes_sha224 = HashView.HashView() #leb
-        self.hashes_sha224.alg_label.set_label("SHA224")
-        self.hashes_content.pack_start(self.hashes_sha224, False, True, 5)
+        self.hashes_start = Gtk.Button(label="Hash!")
+        self.hashes_content.pack_start(self.hashes_start, False, True, 2)
 
-        self.hashes_sha384 = HashView.HashView() #leb
-        self.hashes_sha384.alg_label.set_label("SHA384")
-        self.hashes_content.pack_start(self.hashes_sha384, False, True, 6)
+        self.hashes_result = HashView.HashView() #leb
+        self.hashes_result.alg_label.set_label("Hash")
+        self.hashes_content.pack_start(self.hashes_result, False, True, 1)
 
         self.stack.add_titled(self.hashes_content, "Hashes", "Hashes")
         self.stack.add_titled(Gtk.Label(label="Compare Content"), "Compare", "Compare")
@@ -117,21 +117,4 @@ class MainWindow(Gtk.Window):
                 print("Cancel clicked")
 
             dialog.destroy()
-
-    def initial_file_selected(self):
-        self.stack = Gtk.Stack()
-        self.stack.add_titled(Gtk.Label(label="Hashes Content"), "Hashes", "Hashes")
-        self.stack.add_titled(Gtk.Label(label="Compare Content"), "Compare", "Compare")
-        self.stack.add_titled(Gtk.Label(label="Verify Content"), "Verify", "Verify")
-
-        self.stack_switcher = Gtk.StackSwitcher(receives_default=False)
-        self.stack_switcher.set_stack(self.stack)
-
-
-        self.home_container.remove(self.welcome)
-        self.headerbar.set_custom_title(self.stack_switcher)
-        self.home_container.pack_start(self.stack, False, False, 1)
-        self.home_container.show_all()
-        self.headerbar.show_all()
-
 
