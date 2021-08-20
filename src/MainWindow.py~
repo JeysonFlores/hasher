@@ -12,17 +12,24 @@ from gi.repository import Gtk, Granite
 import constants as cn
 
 BLOCK_SIZE = 65536
-file_hash = hashlib.sha256()
+file_hash = hashlib.sha384()
+
+hash_algorythms = ["md5", "sha1", "sha224", "sha256", "sha384", "sha512"]
 
 class MainWindow(Gtk.Window):
 
     def __init__(self):
         Gtk.Window.__init__(self)
 
+        self.has_focus = False
+        self.can_focus = False
+        self.can_default = False
+        self.receives_default = False
+
         context = self.get_style_context()
         context.add_class ("rounded")
 
-        title_label = Gtk.Label(label="Hasher")
+        title_label = Gtk.Button(label="Hasher")
         title_label_context = title_label.get_style_context()
         title_label_context.add_class("keycap")
 
@@ -34,9 +41,10 @@ class MainWindow(Gtk.Window):
         self.set_titlebar(self.headerbar)
 
 
-        self.home_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0, homogeneous = True)
+        self.home_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0, homogeneous = True, receives_default=False)
 
-        self.welcome = Granite.WidgetsWelcome (title="Welcome to Hasher", subtitle="Hash your files")
+        self.welcome = Granite.WidgetsWelcome (title="Welcome to Hasher", subtitle="Hash your files", receives_default=False)
+        self.welcome.receives_default = False
         self.welcome.append ("folder-open", "Open a File", "Open a file to hash it out")
         self.welcome.connect("activated", self.on_welcome_activated)
 
@@ -66,11 +74,11 @@ class MainWindow(Gtk.Window):
             if response == Gtk.ResponseType.OK:
                 print("File selected: " + dialog.get_filename())
 
-                with open(dialog.get_filename(), 'rb') as f: # Open the file to read it's bytes
-                    fb = f.read(BLOCK_SIZE) # Read from the file. Take in the amount declared above
-                    while len(fb) > 0: # While there is still data being read from the file
-                        file_hash.update(fb) # Update the hash
-                        fb = f.read(BLOCK_SIZE) # Read
+                with open(dialog.get_filename(), 'rb') as f: 
+                    fb = f.read(BLOCK_SIZE)
+                    while len(fb) > 0:
+                        file_hash.update(fb)
+                        fb = f.read(BLOCK_SIZE) 
 
                 print (file_hash.hexdigest())
                 self.initial_file_selected()

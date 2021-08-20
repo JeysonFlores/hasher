@@ -26,6 +26,8 @@ class Application(Gtk.Application):
         if granite_settings.get_prefers_color_scheme == Granite.SettingsColorScheme.DARK:
             gtk_settings.set_property("gtk-application-prefer-dark-theme", True)  #
 
+        #gtk_settings.set_property("gtk-application-prefer-dark-theme", True)  #
+
         self.win.show_all()
 
         Gtk.main()

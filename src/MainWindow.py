@@ -10,9 +10,12 @@ gi.require_version('Handy', '1')
 from gi.repository import Gtk, Granite
 
 import constants as cn
+import HashView 
 
 BLOCK_SIZE = 65536
-file_hash = hashlib.sha256()
+file_hash = hashlib.sha384()
+
+hash_algorythms = ["md5", "sha1", "sha224", "sha256", "sha384", "sha512"]
 
 class MainWindow(Gtk.Window):
 
@@ -22,29 +25,64 @@ class MainWindow(Gtk.Window):
         context = self.get_style_context()
         context.add_class ("rounded")
 
-        title_label = Gtk.Label(label="Hasher")
-        title_label_context = title_label.get_style_context()
-        title_label_context.add_class("keycap")
+        self.stack = Gtk.Stack()
+
+        self.hashes_content = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0, homogeneous = False)
+        hashes_content_context = self.hashes_content.get_style_context()
+        hashes_content_context.add_class("uwu")
+
+        self.hashes_select_file = Gtk.Button(label="Select File") #leb
+        hashes_select_file_context = self.hashes_select_file.get_style_context()
+        hashes_select_file_context.add_class("suggested-action")
+        self.hashes_content.pack_start(self.hashes_select_file, False, False, 0)
+
+        self.hashes_md5 = HashView.HashView() #leb
+        self.hashes_md5.alg_label.set_label("MD5")
+        self.hashes_content.pack_start(self.hashes_md5, False, True, 1)
+
+        self.hashes_sha1 = HashView.HashView() #leb
+        self.hashes_sha1.alg_label.set_label("SHA1")
+        self.hashes_content.pack_start(self.hashes_sha1, False, True, 2)
+
+        self.hashes_sha256 = HashView.HashView() #leb
+        self.hashes_sha256.alg_label.set_label("SHA256")
+        self.hashes_content.pack_start(self.hashes_sha256, False, True, 3)
+
+        self.hashes_sha512 = HashView.HashView() #leb
+        self.hashes_sha512.alg_label.set_label("SHA512")
+        self.hashes_content.pack_start(self.hashes_sha512, False, True, 4)
+
+        self.hashes_sha224 = HashView.HashView() #leb
+        self.hashes_sha224.alg_label.set_label("SHA224")
+        self.hashes_content.pack_start(self.hashes_sha224, False, True, 5)
+
+        self.hashes_sha384 = HashView.HashView() #leb
+        self.hashes_sha384.alg_label.set_label("SHA384")
+        self.hashes_content.pack_start(self.hashes_sha384, False, True, 6)
+
+        self.stack.add_titled(self.hashes_content, "Hashes", "Hashes")
+        self.stack.add_titled(Gtk.Label(label="Compare Content"), "Compare", "Compare")
+        self.stack.add_titled(Gtk.Label(label="Verify Content"), "Verify", "Verify")
+
+        
+
+        self.compare_select_file = Gtk.Button(label="Select File")
+        self.verify_select_file = Gtk.Button(label="Select File")
+
+
+
+
+        self.stack_switcher = Gtk.StackSwitcher(receives_default=False)
+        self.stack_switcher.set_stack(self.stack)
 
         self.headerbar = Gtk.HeaderBar()
         headerbar_context = self.headerbar.get_style_context()
         headerbar_context.add_class("flat")
         self.headerbar.set_show_close_button(True)
-        self.headerbar.set_custom_title(title_label)
+        self.headerbar.set_custom_title(self.stack_switcher)
         self.set_titlebar(self.headerbar)
-
-
-        self.home_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0, homogeneous = True)
-
-        self.welcome = Granite.WidgetsWelcome (title="Welcome to Hasher", subtitle="Hash your files")
-        self.welcome.append ("folder-open", "Open a File", "Open a file to hash it out")
-        self.welcome.connect("activated", self.on_welcome_activated)
-
-        self.home_container.pack_start(self.welcome, False, False, 0)
-
-        self.add(self.home_container)
-
         
+        self.add(self.stack)
 
         self.resize(600, 400)
 
@@ -66,11 +104,11 @@ class MainWindow(Gtk.Window):
             if response == Gtk.ResponseType.OK:
                 print("File selected: " + dialog.get_filename())
 
-                with open(dialog.get_filename(), 'rb') as f: # Open the file to read it's bytes
-                    fb = f.read(BLOCK_SIZE) # Read from the file. Take in the amount declared above
-                    while len(fb) > 0: # While there is still data being read from the file
-                        file_hash.update(fb) # Update the hash
-                        fb = f.read(BLOCK_SIZE) # Read
+                with open(dialog.get_filename(), 'rb') as f: 
+                    fb = f.read(BLOCK_SIZE)
+                    while len(fb) > 0:
+                        file_hash.update(fb)
+                        fb = f.read(BLOCK_SIZE) 
 
                 print (file_hash.hexdigest())
                 self.initial_file_selected()
@@ -86,11 +124,7 @@ class MainWindow(Gtk.Window):
         self.stack.add_titled(Gtk.Label(label="Compare Content"), "Compare", "Compare")
         self.stack.add_titled(Gtk.Label(label="Verify Content"), "Verify", "Verify")
 
-        self.stack_switcher = Gtk.StackSwitcher()
-        self.stack_switcher.has_focus = False
-        self.stack_switcher.can_focus = False
-        self.stack_switcher.can_default = False
-        self.stack_switcher.receives_default = False
+        self.stack_switcher = Gtk.StackSwitcher(receives_default=False)
         self.stack_switcher.set_stack(self.stack)
 
 
