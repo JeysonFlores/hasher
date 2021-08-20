@@ -6,6 +6,7 @@ install_data = [
     ('share/applications', ['data/com.github.jeysonflores.hasher.desktop']),
     ('share/metainfo', ['data/com.github.jeysonflores.hasher.appdata.xml']),
     ('share/icons/hicolor/128x128/apps',['data/com.github.jeysonflores.hasher.svg']),
+    ('bin/hasher',['data/style.css']),
     ('bin/hasher',['src/constants.py']),
     ('bin/hasher',['src/main.py']),
     ('bin/hasher',['src/HashView.py']),
