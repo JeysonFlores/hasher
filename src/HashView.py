@@ -19,7 +19,9 @@ class HashView(Gtk.Box):
 
         self.text_view = Gtk.Entry(editable=False, can_focus=False)
         self.text_view.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-copy-symbolic")
+        self.text_view.connect("icon-press", self.copy_to_cipboard)
         self.pack_start(self.text_view, False, False, 0)
 
-    def copy_to_cipboard(self):
-        pass
+    def copy_to_cipboard(self, entry, icon_position, event):
+        if self.text_view.get_text() != "":
+            self.clipboard.set_text(self.text_view.get_text(), -1)
