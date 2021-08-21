@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import os, sys
+import sys
 from distutils.core import setup
 from distutils.command.install import install as _install
 

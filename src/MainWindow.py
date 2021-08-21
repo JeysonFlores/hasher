@@ -4,17 +4,13 @@ import hashlib
 import gi
 
 gi.require_version('Gtk', '3.0')
-gi.require_version('Granite', '1.0')
-gi.require_version('Handy', '1')
 
-from gi.repository import Gtk, Granite
+from gi.repository import Gtk
 
-import constants as cn
 import HashView 
 
 BLOCK_SIZE = 65536
 file_hash = hashlib.sha384()
-
 hash_algorythms = ["md5", "sha1", "sha224", "sha256", "sha384", "sha512"]
 
 class MainWindow(Gtk.Window):
@@ -69,7 +65,7 @@ class MainWindow(Gtk.Window):
         hashes_start_context.add_class("small_content")
         self.hashes_content.pack_start(self.hashes_start, False, True, 2)
 
-        self.hashes_result = HashView.HashView() #leb
+        self.hashes_result = HashView.HashView()
         hashes_result_context = self.hashes_result.get_style_context()
         hashes_result_context.add_class("final_content")
         self.hashes_result.alg_label.set_label("Hash")
