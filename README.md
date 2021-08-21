@@ -3,3 +3,6 @@
 </p>
 <h1 align="center">Hasher</h1>
 <h4 align="center">Hash, Compare and Verify your files</h4>
+
+# Screenshots
+<img src="https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshot-1.png" alt="Screenshot" />
