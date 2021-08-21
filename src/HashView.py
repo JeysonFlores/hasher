@@ -5,7 +5,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 gi.require_version('Handy', '1')
 
-from gi.repository import Gtk, Granite
+from gi.repository import Gtk, Gdk
 
 import constants as cn
 
@@ -13,7 +13,8 @@ class HashView(Gtk.Box):
 
     def __init__(self):
         Gtk.Box.__init__(self, orientation = Gtk.Orientation.VERTICAL)
-        self.orientation = Gtk.Orientation.VERTICAL
+
+        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
         self.alg_label = Gtk.Label(label="ALG", halign=Gtk.Align.START)
         alg_label_context = self.alg_label.get_style_context()
@@ -23,3 +24,6 @@ class HashView(Gtk.Box):
         self.text_view = Gtk.Entry(editable=False, can_focus=False)
         self.text_view.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-copy-symbolic")
         self.pack_start(self.text_view, False, False, 0)
+
+    def copy_to_cipboard(self):
+        pass

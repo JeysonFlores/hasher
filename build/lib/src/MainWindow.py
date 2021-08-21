@@ -27,16 +27,18 @@ class MainWindow(Gtk.Window):
 
         self.stack = Gtk.Stack()
 
-        self.hashes_content = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0, homogeneous = False)
+        self.hashes_content = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 20, homogeneous = False)
         hashes_content_context = self.hashes_content.get_style_context()
-        hashes_content_context.add_class("uwu")
+        hashes_content_context.add_class("main_content")
 
-        self.hashes_select_file = Gtk.Button(label="Select File",image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True) #leb
+        self.hashes_select_file = Gtk.Button(label="Select File",image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
         hashes_select_file_context = self.hashes_select_file.get_style_context()
-        hashes_select_file_context.add_class("suggested-action")
-        self.hashes_content.pack_start(self.hashes_select_file, False, False, 0)
+        hashes_select_file_context.add_class("highlighted_text")
+        #self.hashes_content.pack_start(self.hashes_select_file, False, False, 0)
 
-        self.hashes_alg_combo = Gtk.ComboBoxText()
+        self.hashes_alg_combo = Gtk.ComboBoxText(can_focus=False)
+        hashes_alg_combo_context = self.hashes_alg_combo.get_style_context()
+        hashes_alg_combo_context.add_class("highlighted_text")
 
         algorythms = [
             "MD5",
@@ -51,12 +53,25 @@ class MainWindow(Gtk.Window):
             self.hashes_alg_combo.append_text(algorythm)
 
         self.hashes_alg_combo.set_active(0)
-        self.hashes_content.pack_start(self.hashes_alg_combo, False, True, 1)
+        #self.hashes_content.pack_start(self.hashes_alg_combo, False, True, 1)
+
+        button_combo = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL)
+        button_combo_context = button_combo.get_style_context()
+        button_combo_context.add_class("selection_data")
+        button_combo.pack_start(self.hashes_select_file, True, True, 0)
+        button_combo.pack_start(self.hashes_alg_combo, False, False, 1)
+
+        self.hashes_content.pack_start(button_combo, False, False, 2)
 
         self.hashes_start = Gtk.Button(label="Hash!")
+        hashes_start_context = self.hashes_start.get_style_context()
+        hashes_start_context.add_class("suggested-action")
+        hashes_start_context.add_class("small_content")
         self.hashes_content.pack_start(self.hashes_start, False, True, 2)
 
         self.hashes_result = HashView.HashView() #leb
+        hashes_result_context = self.hashes_result.get_style_context()
+        hashes_result_context.add_class("final_content")
         self.hashes_result.alg_label.set_label("Hash")
         self.hashes_content.pack_start(self.hashes_result, False, True, 1)
 

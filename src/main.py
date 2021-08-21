@@ -1,37 +1,56 @@
 #!/usr/bin/python3
 
 import gi
+import os, sys
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Granite', '1.0')
 
-from gi.repository import Gtk, Gio, Granite
+from gi.repository import Gtk, Gio, Granite, Gdk
 
 import MainWindow as wn
 import constants as cn
-
-import hashlib
 
 class Application(Gtk.Application):
 
     def do_activate(self):
 
         self.win = wn.MainWindow()
-        self.win.connect("delete-event", Gtk.main_quit)
+        self.win.connect("delete-event", self.delete_window)
 
         granite_settings = Granite.Settings.get_default()
         gtk_settings = Gtk.Settings.get_default ()
 
-        #Since watchers in Python are quite complicated, Dark Mode is determined at launch time
+        #Since watchers in Python are quite complicated, Dark Mode is determined at launch time(may change later)
         if granite_settings.get_prefers_color_scheme() == Granite.SettingsColorScheme.DARK:
-            gtk_settings.set_property("gtk-application-prefer-dark-theme", True)  #
+            gtk_settings.set_property("gtk-application-prefer-dark-theme", True) 
 
+        launch_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+        if launch_dir == "/usr/bin":
+            modules_path = "/usr/share/com.github.jeysonflores.hasher/hasher"
+        else:
+            modules_path = launch_dir + "/hasher"
+
+        screen = Gdk.Screen.get_default()
+        provider = Gtk.CssProvider()
+        provider.load_from_path(modules_path + "/style.css")
+        Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+        self.win.resize(449,322)
         self.win.show_all()
 
         Gtk.main()
 
-    def pref_color_scheme(self):
-        pass
+    def delete_window(self, window, event):
+        # get window position
+        print(self.win.get_position().root_x)
+        print(self.win.get_position().root_y)
+
+        # get window size
+        print(self.win.get_size().width)
+        print(self.win.get_size().height)
+        Gtk.main_quit()
 
 app = Application()
 

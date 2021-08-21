@@ -1,29 +1,31 @@
-.uwu {
+.main_content {
 	padding-left: 50px;
 	padding-right: 50px;
+	margin-top: 60px;
+	margin-bottom: 60px;
 }
 
-.leb {
-	margin-bottom: 15;
-	margin-top: 30px;
+.selection_data {
+	margin-bottom: 30px;
+	/*margin-top: 60px;*/
 	margin-left: 30px;
 	margin-right: 30px;
 }
 
-.ew {
-	margin-left: 30px;
-	margin-right: 30px;
-}
-
-.combo {
+.small_content {
 	margin-left: 150px;
 	margin-right: 150px;
 	margin-bottom: 15px;
-	margin-top: 15px;
 }
 
-.ew_final{
+
+
+.final_content{
 	margin-left: 30px;
 	margin-right: 30px;
-	margin-bottom: 30px;
+	/*margin-bottom: 60px;*/
+}
+
+.highlighted_text {
+	color: @theme_selected_fg_color;
 }
