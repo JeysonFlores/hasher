@@ -16,7 +16,12 @@ class install(_install):
 install_data = [
     ('share/applications', ['data/com.github.jeysonflores.hasher.desktop']),
     ('share/metainfo', ['data/com.github.jeysonflores.hasher.appdata.xml']),
-    ('share/icons/hicolor/128x128/apps',['data/com.github.jeysonflores.hasher.svg']),
+    ('share/icons/hicolor/128x128/apps',['data/assets/icons/128x128/com.github.jeysonflores.hasher.svg']),
+    ('share/icons/hicolor/64x64/apps',['data/assets/icons/64x64/com.github.jeysonflores.hasher.svg']),
+    ('share/icons/hicolor/48x48/apps',['data/assets/icons/48x48/com.github.jeysonflores.hasher.svg']),
+    ('share/icons/hicolor/32x32/apps',['data/assets/icons/32x32/com.github.jeysonflores.hasher.svg']),
+    ('share/icons/hicolor/24x24/apps',['data/assets/icons/24x24/com.github.jeysonflores.hasher.svg']),
+    ('share/icons/hicolor/16x16/apps',['data/assets/icons/16x16/com.github.jeysonflores.hasher.svg']),
     ('share/glib-2.0/schemas', ["data/com.github.jeysonflores.hasher.gschema.xml"]),
     ('bin/hasher',['data/style.css']),
     ('bin/hasher',['src/constants.py']),
