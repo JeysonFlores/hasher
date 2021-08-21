@@ -8,9 +8,10 @@ gi.require_version('Gio', '2.0')
 
 from gi.repository import Gio
 
-
+# Get launch script dir
 launch_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
+# Update sys.path to include modules
 if launch_dir == "/usr/bin":
     modules_path = "/usr/share/com.github.jeysonflores.hasher/hasher"
 else:
