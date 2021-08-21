@@ -5,13 +5,13 @@ from distutils.command.install import install as _install
 
 def _post_install(dir):
     from subprocess import call
-    call([sys.executable, 'post_install.py'])
+    call([sys.executable, 'build-aux/post_install.py'])
 
 class install(_install):
     def run(self):
         _install.run(self)
         self.execute(_post_install, (self.install_lib,),
-                     msg="Running post install task")
+                     msg="- Running post-installation script")
 
 install_data = [
     ('share/applications', ['data/com.github.jeysonflores.hasher.desktop']),
@@ -20,7 +20,7 @@ install_data = [
     ('share/glib-2.0/schemas', ["data/com.github.jeysonflores.hasher.gschema.xml"]),
     ('bin/hasher',['data/style.css']),
     ('bin/hasher',['src/constants.py']),
-    ('bin/hasher',['src/main.py']), #/usr/share/glib-2.0/schemas
+    ('bin/hasher',['src/main.py']),
     ('bin/hasher',['src/HashView.py']),
     ('bin/hasher',['src/MainWindow.py']),
     ('bin/hasher',['src/__init__.py']),
