@@ -18,7 +18,6 @@ class HashView(Gtk.Box):
         self.pack_start(self.alg_label, True, True, 0)
 
         self.text_view = Gtk.Entry(editable=False, can_focus=False)
-        self.text_view.set_text("troleado pvto")
         self.text_view.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-copy-symbolic")
         self.text_view.connect("icon-press", self.copy_to_cipboard)
         self.pack_start(self.text_view, False, False, 0)
