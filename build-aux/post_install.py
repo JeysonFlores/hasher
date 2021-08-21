@@ -7,4 +7,4 @@ try:
     subprocess.call(['glib-compile-schemas', schemadir])
     print("- GSchemas compiled")
 except Exception as e:
-    print("- Compilation failed...")
+    print("- GSchemas compilation failed...")
