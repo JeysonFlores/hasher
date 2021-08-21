@@ -23,7 +23,7 @@ class Application(Gtk.Application):
         granite_settings = Granite.Settings.get_default()
         gtk_settings = Gtk.Settings.get_default ()
 
-        #Since watchers in Python are quite complicated, Dark Mode is determined at launch time(may change later)
+        #Since complex signals in Python are quite complicated, Dark Mode is determined at launch time(may change later)
         if granite_settings.get_prefers_color_scheme() == Granite.SettingsColorScheme.DARK:
             gtk_settings.set_property("gtk-application-prefer-dark-theme", True) 
 
