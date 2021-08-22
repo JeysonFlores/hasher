@@ -34,7 +34,7 @@
 		<binary>com.github.jeysonflores.hasher</binary>
 	</provides>
 	<releases>
-    <release version="0.0.1" date="2021-08-21">
+    <release version="1.0.1" date="2021-08-22">
       <description>
         <p>First Release</p>
         <ul>
