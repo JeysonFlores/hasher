@@ -8,7 +8,7 @@ import gettext
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
-
+# 
 try:
     current_locale, encoding = locale.getdefaultlocale()
     locale_path = os.path.join(
