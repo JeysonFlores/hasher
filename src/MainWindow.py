@@ -6,7 +6,7 @@ import HashView
 
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 
 BLOCK_SIZE = 65536
@@ -21,6 +21,8 @@ class MainWindow(Gtk.Window):
 
         self.main_file = {"name": "", "route": "", "alg": "", "value": ""}
         self.secondary_file = {"name": "", "route": "", "alg": "", "value": ""}
+
+        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
         self.stack = Gtk.Stack()
 
@@ -60,6 +62,7 @@ class MainWindow(Gtk.Window):
         self.hashes_content.pack_start(button_combo, False, False, 2)
 
         self.hashes_result = HashView.HashView()
+        self.hashes_result.text_view.connect("icon-press", self.hashes_result_icon_selected)
         hashes_result_context = self.hashes_result.get_style_context()
         hashes_result_context.add_class("final_content")
         self.hashes_result.alg_label.set_label("Hash")
@@ -102,16 +105,42 @@ class MainWindow(Gtk.Window):
         self.stack.add_titled(self.compare_content, "Compare", "Compare")
 
         #Verify Content 
-        self.verify_content = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 20, homogeneous = False, valign = Gtk.Align.CENTER)
+        self.verify_content = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0, homogeneous = False, valign = Gtk.Align.CENTER)
         verify_content_context = self.verify_content.get_style_context()
         verify_content_context.add_class("main_content")
 
         self.verify_select_main_file = Gtk.Button(label="Select File",image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
         self.verify_select_main_file.connect("clicked", self.main_file_selection)
         verify_select_main_file_context = self.verify_select_main_file.get_style_context()
-        verify_select_main_file_context.add_class("suggested-action")
+        verify_select_main_file_context.add_class("highlighted_text")
         verify_select_main_file_context.add_class("selection_data")
         self.verify_content.pack_start(self.verify_select_main_file, False, False, 0)
+
+        verify_form = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
+
+        verify_form_label = Gtk.Label(label="Hash", halign=Gtk.Align.START)
+        verify_form_label_context = verify_form_label.get_style_context()
+        verify_form_label_context.add_class("h4")
+        verify_form.pack_start(verify_form_label, True, True, 0)
+
+        self.verify_form_entry = Gtk.Entry()
+        self.verify_form_entry.connect("icon-press", self.verify_form_icon_selected)
+        self.verify_form_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-paste-symbolic")
+        verify_form.pack_start(self.verify_form_entry, True, True, 1)
+
+        self.verify_content.pack_start(verify_form, False, False, 2)
+
+        self.verify_start = Gtk.Button(label="Verify!", can_focus=False, sensitive=False)
+        self.verify_start.connect("clicked", self.verify_hashes)
+        verify_start_context = self.verify_start.get_style_context()
+        verify_start_context.add_class("suggested-action")
+        verify_start_context.add_class("small_content")
+        self.verify_content.pack_start(self.verify_start, False, False, 2)
+
+        self.verify_alert = Gtk.Image(icon_size=Gtk.IconSize.DND, visible=False) #True=emblem-default-symbolic - False=process-stop-symbolic
+        verify_alert_context = self.verify_alert.get_style_context()
+        verify_alert_context.add_class("icon_status")
+        self.verify_content.pack_start(self.verify_alert, False, False, 3)
 
         self.stack.add_titled(self.verify_content, "Verify", "Verify")
 
@@ -119,7 +148,7 @@ class MainWindow(Gtk.Window):
         #HeaderBar Content
         self.stack_switcher = Gtk.StackSwitcher(receives_default=False)
         self.stack_switcher.set_stack(self.stack)
-
+        
         self.headerbar = Gtk.HeaderBar(decoration_layout_set=True, decoration_layout="close:")
         headerbar_context = self.headerbar.get_style_context()
         headerbar_context.add_class("flat")
@@ -143,6 +172,7 @@ class MainWindow(Gtk.Window):
                 self.main_file["name"] = dialog.get_filename()[::-1].split("/", 1)[0][::-1]
                 self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
                 self.main_file["route"] = dialog.get_filename()
+                self.verify_start.set_sensitive(True)
 
                 main_file_hash = self.get_hash(self.main_file["alg"], self.main_file["route"])
 
@@ -154,6 +184,49 @@ class MainWindow(Gtk.Window):
                     self.compare_start.set_sensitive(True)
 
         dialog.destroy()                
+
+    def hashes_result_icon_selected(self, entry, icon_position, event):
+        if icon_position == Gtk.EntryIconPosition.SECONDARY:
+            if self.hashes_result.text_view.get_text() != "":
+                self.clipboard.set_text(self.hashes_result.text_view.get_text(), -1)
+
+        elif icon_position == Gtk.EntryIconPosition.PRIMARY:
+            if self.main_file["value"] != "":
+                self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
+
+                main_file_hash = self.get_hash(self.main_file["alg"], self.main_file["route"])
+
+                self.main_file["value"] = main_file_hash
+                self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
+                self.hashes_result.text_view.set_text(main_file_hash)
+
+
+    def get_hash(self, alg, filename):
+        if alg == "MD5":
+            file_hash = hashlib.md5()
+
+        elif alg == "SHA1":
+            file_hash = hashlib.sha1()
+
+        elif alg == "SHA224":
+            file_hash = hashlib.sha224()
+
+        elif alg == "SHA256":
+            file_hash = hashlib.sha256()
+
+        elif alg == "SHA384":
+            file_hash = hashlib.sha384()
+
+        elif alg == "SHA512":
+            file_hash = hashlib.sha512()
+
+        with open(filename, 'rb') as f: 
+                    fb = f.read(BLOCK_SIZE)
+                    while len(fb) > 0:
+                        file_hash.update(fb)
+                        fb = f.read(BLOCK_SIZE)
+
+        return file_hash.hexdigest()
 
     def secondary_file_selection(self, button):
         dialog = Gtk.FileChooserDialog(title="Please choose a file", parent=self, action=Gtk.FileChooserAction.OPEN)
@@ -182,29 +255,33 @@ class MainWindow(Gtk.Window):
             self.compare_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
             self.compare_alert.set_visible(True)
 
-    def get_hash(self, alg, filename):
-        if alg == "MD5":
-            file_hash = hashlib.md5()
+    def verify_form_icon_selected(self, entry, icon_position, event):
+        entry.set_text(self.clipboard.wait_for_text())
 
-        elif alg == "SHA1":
-            file_hash = hashlib.sha1()
+    def verify_hashes(self, button):
+        if self.verify_form_entry.get_text() != "":
+            if self.main_file["value"] == self.verify_form_entry.get_text():
+                self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
+                self.verify_alert.set_visible(True)
+                return 0
 
-        elif alg == "SHA224":
-            file_hash = hashlib.sha224()
+            algorythms = [
+            "MD5",
+            "SHA1",
+            "SHA224",
+            "SHA256",
+            "SHA384",
+            "SHA512",
+            ]
 
-        elif alg == "SHA256":
-            file_hash = hashlib.sha256()
+            algorythms.remove(self.main_file["alg"])
 
-        elif alg == "SHA384":
-            file_hash = hashlib.sha384()
-
-        elif alg == "SHA512":
-            file_hash = hashlib.sha512()
-
-        with open(filename, 'rb') as f: 
-                    fb = f.read(BLOCK_SIZE)
-                    while len(fb) > 0:
-                        file_hash.update(fb)
-                        fb = f.read(BLOCK_SIZE)
-
-        return file_hash.hexdigest()
+            for alg in algorythms:
+                hash = self.get_hash(alg, self.main_file["route"])
+                if hash == self.verify_form_entry.get_text():
+                    self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
+                    self.verify_alert.set_visible(True)
+                    return 0
+            
+            self.verify_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
+            self.verify_alert.set_visible(True)
