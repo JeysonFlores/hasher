@@ -1,6 +1,6 @@
 import subprocess
 
-schemadir = "/usr/local/share/glib-2.0/schemas"
+schemadir = "/app/share/glib-2.0/schemas"
 
 try:
     print("- Compiling GSchemas...")

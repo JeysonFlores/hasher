@@ -30,7 +30,7 @@ class Application(Gtk.Application):
         if launch_dir == "/usr/bin":
             modules_path = "/usr/share/com.github.jeysonflores.hasher/hasher"
         else:
-            modules_path = launch_dir + "/hasher"
+            modules_path = "/build/files/bin/hasher"
 
         screen = Gdk.Screen.get_default()
         provider = Gtk.CssProvider()

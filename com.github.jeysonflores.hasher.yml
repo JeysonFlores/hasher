@@ -15,7 +15,9 @@ finish-args:
 
 modules:
   - name: hasher
-    buildsystem: python
+    buildsystem: simple
+    build-commands:
+     - python3 setup.py install --prefix=/app
     sources:
       - type: dir
         path: .
