@@ -18,8 +18,8 @@ class Application(Gtk.Application):
         self.win = wn.MainWindow()
         self.win.connect("delete-event", self.delete_window)
 
-        granite_settings = Granite.Settings.get_default()
-        gtk_settings = Gtk.Settings.get_default ()
+        granite_settings = Granite.Settings()
+        gtk_settings = Gtk.Settings.get_default()
 
         #Since complex signals in Python are quite complicated, Dark Mode is determined at launch time(may change later)
         if granite_settings.get_prefers_color_scheme() == Granite.SettingsColorScheme.DARK:
@@ -30,26 +30,26 @@ class Application(Gtk.Application):
         if launch_dir == "/usr/bin":
             modules_path = "/usr/share/com.github.jeysonflores.hasher/hasher"
         else:
-            modules_path = "/build/files/bin/hasher"
+            modules_path = "/app/bin/hasher"
 
         screen = Gdk.Screen.get_default()
         provider = Gtk.CssProvider()
         provider.load_from_path(modules_path + "/style.css")
         Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         
-        #self.settings = Gio.Settings(schema_id="com.github.jeysonflores.hasher")
-        #self.win.move(self.settings.get_int("pos-x"), self.settings.get_int("pos-y"))
-        #self.win.resize(self.settings.get_int("window-width"), self.settings.get_int("window-height"))
+        self.settings = Gio.Settings(schema_id="com.github.jeysonflores.hasher")
+        self.win.move(self.settings.get_int("pos-x"), self.settings.get_int("pos-y"))
+        self.win.resize(self.settings.get_int("window-width"), self.settings.get_int("window-height"))
         self.win.show_all()
 
         Gtk.main()
 
     def delete_window(self, window, event):
-        #self.settings.set_int("pos-x", self.win.get_position().root_x)
-        #self.settings.set_int("pos-y", self.win.get_position().root_y)
+        self.settings.set_int("pos-x", self.win.get_position().root_x)
+        self.settings.set_int("pos-y", self.win.get_position().root_y)
 
-        #self.settings.set_int("window-width", self.win.get_size().width)
-        #self.settings.set_int("window-height", self.win.get_size().height)
+        self.settings.set_int("window-width", self.win.get_size().width)
+        self.settings.set_int("window-height", self.win.get_size().height)
         
         Gtk.main_quit()
 

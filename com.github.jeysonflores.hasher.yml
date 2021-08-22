@@ -12,6 +12,7 @@ finish-args:
   - '--socket=wayland'
   - '--filesystem=host'
   - '--filesystem=home'
+  - '--system-talk-name=org.freedesktop.Accounts'
 
 modules:
   - name: hasher
