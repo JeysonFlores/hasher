@@ -41,7 +41,7 @@ class MainWindow(Gtk.Window):
         hashes_alg_combo_context = self.hashes_alg_combo.get_style_context()
         hashes_alg_combo_context.add_class("highlighted_text")
 
-        algorythms = [
+        algorithms = [
             "MD5",
             "SHA1",
             "SHA224",
@@ -50,8 +50,8 @@ class MainWindow(Gtk.Window):
             "SHA512",
         ]
 
-        for algorythm in algorythms:
-            self.hashes_alg_combo.append_text(algorythm)
+        for algorithm in algorithms:
+            self.hashes_alg_combo.append_text(algorithm)
 
         self.hashes_alg_combo.set_active(0)
         button_combo = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL)
@@ -265,7 +265,7 @@ class MainWindow(Gtk.Window):
                 self.verify_alert.set_visible(True)
                 return 0
 
-            algorythms = [
+            algorithms = [
             "MD5",
             "SHA1",
             "SHA224",
@@ -274,9 +274,9 @@ class MainWindow(Gtk.Window):
             "SHA512",
             ]
 
-            algorythms.remove(self.main_file["alg"])
+            algorithms.remove(self.main_file["alg"])
 
-            for alg in algorythms:
+            for alg in algorithms:
                 hash = self.get_hash(alg, self.main_file["route"])
                 if hash == self.verify_form_entry.get_text():
                     self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
