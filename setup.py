@@ -33,7 +33,7 @@ install_data = [
 
 setup(  
     name='Hasher',
-    version='1.0',
+    version='1.0.1',
     author='Jeyson Flores',
     description='Hash your files',
     url='https://github.com/JeysonFlores/hasher',

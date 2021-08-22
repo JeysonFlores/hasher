@@ -27,13 +27,11 @@ except FileNotFoundError:
     _ = str
 
 class App:
-    '''Here we are defining our Application infos, so we can easily
-    use in all our application files'''
     application_shortname = "hasher"
     application_id = "com.github.jeysonflores.hasher"
     application_name = "Hasher"
     application_description = _('Hash your files')
-    application_version ="1.0"
+    application_version ="1.0.1"
     app_years = "2021"
     main_url = "https://github.com/JeysonFlores/hasher"
     bug_url = "https://github.com/JeysonFlores/hasher/issues"
