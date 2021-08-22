@@ -19,7 +19,6 @@ Currently there's no support for translations, however it's one of the post-rele
   - `python3-gi (3.36.0-1)`
 
 # Building
-  <h2>Building from source</h2>
   ```
     git clone https://github.com/JeysonFlores/hasher.git
     cd hasher
