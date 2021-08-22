@@ -37,19 +37,19 @@ class Application(Gtk.Application):
         provider.load_from_path(modules_path + "/style.css")
         Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         
-        self.settings = Gio.Settings(schema_id="com.github.jeysonflores.hasher")
-        self.win.move(self.settings.get_int("pos-x"), self.settings.get_int("pos-y"))
-        self.win.resize(self.settings.get_int("window-width"), self.settings.get_int("window-height"))
+        #self.settings = Gio.Settings(schema_id="com.github.jeysonflores.hasher")
+        #self.win.move(self.settings.get_int("pos-x"), self.settings.get_int("pos-y"))
+        #self.win.resize(self.settings.get_int("window-width"), self.settings.get_int("window-height"))
         self.win.show_all()
 
         Gtk.main()
 
     def delete_window(self, window, event):
-        self.settings.set_int("pos-x", self.win.get_position().root_x)
-        self.settings.set_int("pos-y", self.win.get_position().root_y)
+        #self.settings.set_int("pos-x", self.win.get_position().root_x)
+        #self.settings.set_int("pos-y", self.win.get_position().root_y)
 
-        self.settings.set_int("window-width", self.win.get_size().width)
-        self.settings.set_int("window-height", self.win.get_size().height)
+        #self.settings.set_int("window-width", self.win.get_size().width)
+        #self.settings.set_int("window-height", self.win.get_size().height)
         
         Gtk.main_quit()
 
