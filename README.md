@@ -20,11 +20,11 @@ Currently there's no support for translations, however it's one of the post-rele
 
 # Building
   <h2>Building from source</h2>
-  `
+  
   git clone https://github.com/JeysonFlores/hasher.git
   cd hasher
   sudo python3 setup.py install
-  `
+  
   
 # Extras
 Thanks to Marko Brombin for the template.
