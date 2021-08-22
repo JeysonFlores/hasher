@@ -22,7 +22,7 @@ Currently there's no support for translations, however it's one of the post-rele
   ```
     git clone https://github.com/JeysonFlores/hasher.git
     cd hasher
-    sudo python3 setup.py install
+    flatpak-builder build com.github.jeysonflores.hasher.yml --user --install --force-clean
   ```
   
 # Extras
