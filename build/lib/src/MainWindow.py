@@ -173,4 +173,6 @@ class MainWindow(Gtk.Window):
                 self.hashes_result.alg_label.set_label(self.hashes_alg_combo.get_active_text() + " Hash")
                 self.hashes_result.text_view.set_text(file_hash.hexdigest())
 
-        dialog.destroy()                
+        dialog.destroy()
+        print(self.main_file)
+                
