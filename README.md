@@ -9,7 +9,7 @@
 | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-3.png) | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-4.png) |
 
 
-#Translations
+# Translations
 Currently there's no support for translations, however it's one of the post-release goals I want to achieve. When the translation support it's ready, in this section will be the instructions for contributing.
 
 # Dependencies
