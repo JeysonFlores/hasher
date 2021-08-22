@@ -28,9 +28,7 @@ install_data = [
     ('bin/hasher',['src/main.py']),
     ('bin/hasher',['src/HashView.py']),
     ('bin/hasher',['src/MainWindow.py']),
-    ('bin/hasher',['src/__init__.py']),
-    ('bin/hasher/locale/it_IT/LC_MESSAGES', ['po/it_IT/LC_MESSAGES/hasher.mo']),
-    ('bin/hasher/locale/it_IT/LC_MESSAGES', ['po/it_IT/LC_MESSAGES/hasher.po'])
+    ('bin/hasher',['src/__init__.py'])
 ]
 
 setup(  

@@ -65,7 +65,6 @@ class MainWindow(Gtk.Window):
         self.hashes_result.text_view.connect("icon-press", self.hashes_result_icon_selected)
         hashes_result_context = self.hashes_result.get_style_context()
         hashes_result_context.add_class("final_content")
-        self.hashes_result.alg_label.set_label("Hash")
         self.hashes_content.pack_start(self.hashes_result, False, True, 1)
 
         self.stack.add_titled(self.hashes_content, "Hashes", "Hashes")
@@ -263,7 +262,7 @@ class MainWindow(Gtk.Window):
             if self.main_file["value"] == self.verify_form_entry.get_text():
                 self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
                 self.verify_alert.set_visible(True)
-                return 0
+                return None
 
             algorithms = [
             "MD5",
@@ -281,7 +280,7 @@ class MainWindow(Gtk.Window):
                 if hash == self.verify_form_entry.get_text():
                     self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
                     self.verify_alert.set_visible(True)
-                    return 0
+                    return None
             
             self.verify_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
             self.verify_alert.set_visible(True)
