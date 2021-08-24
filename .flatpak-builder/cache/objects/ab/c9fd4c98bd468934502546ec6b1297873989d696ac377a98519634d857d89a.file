@@ -1,0 +1,32 @@
+{
+  "id" : "com.github.jeysonflores.hasher",
+  "runtime" : "io.elementary.Platform",
+  "runtime-version" : "6",
+  "runtime-commit" : "231672fd8a1624f1a36fe570ba0a2797427c296afe89e0c482a9d8887fdf24c0",
+  "sdk" : "io.elementary.Sdk",
+  "sdk-commit" : "b077c42e51d605e59677f3e72bc36f33a8a39dfa2743e53bdba1dd6e28354c2b",
+  "command" : "com.github.jeysonflores.hasher",
+  "modules" : [
+    {
+      "name" : "hasher",
+      "buildsystem" : "simple",
+      "sources" : [
+        {
+          "path" : ".",
+          "type" : "dir"
+        }
+      ],
+      "build-commands" : [
+        "python3 setup.py install --prefix=/app"
+      ]
+    }
+  ],
+  "finish-args" : [
+    "--share=ipc",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--filesystem=host",
+    "--filesystem=home",
+    "--system-talk-name=org.freedesktop.Accounts"
+  ]
+}

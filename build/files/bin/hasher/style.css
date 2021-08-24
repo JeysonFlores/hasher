@@ -1,0 +1,40 @@
+.main_content {
+	padding-left: 50px;
+	padding-right: 50px;
+	margin-top: 60px;
+	margin-bottom: 60px;
+}
+
+.selection_data {
+	margin-bottom: 30px;
+	/*margin-top: 60px;*/
+	margin-left: 30px;
+	margin-right: 30px;
+}
+
+.small_content {
+	margin-left: 150px;
+	margin-right: 150px;
+	margin-bottom: 15px;
+}
+
+
+
+.final_content{
+	margin-left: 30px;
+	margin-right: 30px;
+	/*margin-bottom: 60px;*/
+}
+
+.highlighted_text {
+	color: @theme_selected_fg_color;
+}
+
+.flat_selection_data {
+	margin-left: 30px;
+	margin-right: 30px;
+}
+
+.icon_status{
+	margin-bottom: -30px;
+}
