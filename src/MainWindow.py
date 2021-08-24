@@ -53,7 +53,10 @@ class MainWindow(Gtk.Window):
         for algorithm in algorithms:
             self.hashes_alg_combo.append_text(algorithm)
 
-        self.hashes_alg_combo.set_active(0)
+        self.settings = Gio.Settings(schema_id="com.github.jeysonflores.hasher")
+
+        self.hashes_alg_combo.set_active(self.settings.get_int("algorithm"))
+        self.hashes_alg_combo.connect("selected", self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())))
         button_combo = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL)
         button_combo_context = button_combo.get_style_context()
         button_combo_context.add_class("selection_data")

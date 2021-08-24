@@ -24,5 +24,10 @@
 		<summary>Window height</summary>
 		<description>The saved height of the main window</description>
 	</key>
+	<key name="algorithm" type="i">
+		<default>3</default>
+		<summary>Hash algorithm</summary>
+		<description>The saved last selected hash algorithm</description>
+	</key>
  </schema>
 </schemalist>
