@@ -34,7 +34,7 @@
 		<binary>com.github.jeysonflores.hasher</binary>
 	</provides>
 	<releases>
-	<release version="1.0.1-6" date="2021-08-24">
+	<release version="1.0.1-7" date="2021-08-24">
       <description>
 	  	<p>New Features:</p>
 		<ul>
@@ -46,6 +46,7 @@
 			<li>Other code cleaning</li>
         </ul>
       </description>
+	</release>
 	<release version="1.0.1-4" date="2021-08-23">
       <description>
         <p>Improvements:</p>
@@ -54,6 +55,7 @@
             <li>Flatpak's file access permissions removed</li>
         </ul>
       </description>
+	</release>
     <release version="1.0.1" date="2021-08-22">
       <description>
         <p>First Release</p>
