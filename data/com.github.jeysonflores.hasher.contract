@@ -1,0 +1,7 @@
+[Contractor Entry]
+Name=Hash File
+Exec=flatpak run com.github.jeysonflores.hasher %f
+Icon=com.github.jeysonflores.hasher
+Description=Hash the selected file
+MimeType=!inode;
+Gettext-Domain=com.github.jeysonflores.hasher

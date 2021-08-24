@@ -23,6 +23,7 @@ install_data = [
     ('share/icons/hicolor/24x24/apps',['data/assets/icons/24x24/com.github.jeysonflores.hasher.svg']),
     ('share/icons/hicolor/16x16/apps',['data/assets/icons/16x16/com.github.jeysonflores.hasher.svg']),
     ('share/glib-2.0/schemas', ["data/com.github.jeysonflores.hasher.gschema.xml"]),
+    ('share/contractor', ["data/com.github.jeysonflores.hasher.contract"]),
     ('bin/hasher',['data/style.css']),
     ('bin/hasher',['src/constants.py']),
     ('bin/hasher',['src/main.py']),
