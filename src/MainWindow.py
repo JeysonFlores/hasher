@@ -3,6 +3,7 @@
 import hashlib
 import gi
 import HashView 
+import sys
 
 gi.require_version('Gtk', '3.0')
 
@@ -159,27 +160,34 @@ class MainWindow(Gtk.Window):
 
         self.resize(600, 400)
 
+        if len(sys.argv) > 1:
+            contract_file = sys.argv[1]
+            self.update_labels(contract_file)
+
+    def update_labels(self, filename):
+        self.hashes_select_file.set_label(filename[::-1].split("/", 1)[0][::-1])
+        self.compare_select_main_file.set_label(filename[::-1].split("/", 1)[0][::-1])
+        self.verify_select_main_file.set_label(filename[::-1].split("/", 1)[0][::-1])
+        self.main_file["name"] = filename[::-1].split("/", 1)[0][::-1]
+        self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
+        self.main_file["route"] = filename
+        self.verify_start.set_sensitive(True)
+
+        main_file_hash = self.get_hash(self.main_file["alg"], self.main_file["route"])
+
+        self.main_file["value"] = main_file_hash
+        self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
+        self.hashes_result.text_view.set_text(main_file_hash)
+
+        if self.secondary_file["name"] != "":
+            self.compare_start.set_sensitive(True)
+
     def main_file_selection(self, button):
         dialog = Gtk.FileChooserNative.new("Please choose a file", self, Gtk.FileChooserAction.OPEN, "Open", "Cancel")
         response = dialog.run()
 
         if response == Gtk.ResponseType.ACCEPT:
-                self.hashes_select_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
-                self.compare_select_main_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
-                self.verify_select_main_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
-                self.main_file["name"] = dialog.get_filename()[::-1].split("/", 1)[0][::-1]
-                self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
-                self.main_file["route"] = dialog.get_filename()
-                self.verify_start.set_sensitive(True)
-
-                main_file_hash = self.get_hash(self.main_file["alg"], self.main_file["route"])
-
-                self.main_file["value"] = main_file_hash
-                self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
-                self.hashes_result.text_view.set_text(main_file_hash)
-
-                if self.secondary_file["name"] != "":
-                    self.compare_start.set_sensitive(True)
+            self.update_labels(dialog.get_filename())
 
         dialog.destroy()                
 
