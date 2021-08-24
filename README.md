@@ -25,5 +25,11 @@ Currently there's no support for translations, however it's one of the post-rele
     flatpak-builder build com.github.jeysonflores.hasher.yml --user --install --force-clean
   ```
   
+ # Contributions
+  ## Code
+   -  [Vishal Rao](https://github.com/vjr) - Accessibility enhancements
+  ## Design
+   -  [Vishal Rao](https://github.com/vjr) - Accessibility enhancements
+  
 # Extras
-Thanks to Marko Brombin for the template.
+   - Thanks to [Mirko Brombin](https://github.com/mirkobrombin) for the [template](https://github.com/mirkobrombin/ElementaryPython).
