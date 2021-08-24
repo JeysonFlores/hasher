@@ -160,11 +160,10 @@ class MainWindow(Gtk.Window):
         self.resize(600, 400)
 
     def main_file_selection(self, button):
-        dialog = Gtk.FileChooserDialog(title="Please choose a file", parent=self, action=Gtk.FileChooserAction.OPEN)
-        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK,)
+        dialog = Gtk.FileChooserNative.new("Please choose a file", self, Gtk.FileChooserAction.OPEN, "Open", "Cancel")
         response = dialog.run()
 
-        if response == Gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.ACCEPT:
                 self.hashes_select_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
                 self.compare_select_main_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
                 self.verify_select_main_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
@@ -228,11 +227,10 @@ class MainWindow(Gtk.Window):
         return file_hash.hexdigest()
 
     def secondary_file_selection(self, button):
-        dialog = Gtk.FileChooserDialog(title="Please choose a file", parent=self, action=Gtk.FileChooserAction.OPEN)
-        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK,)
+        dialog = Gtk.FileChooserNative.new("Please choose a file", self, Gtk.FileChooserAction.OPEN, "Open", "Cancel")
         response = dialog.run()
 
-        if response == Gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.ACCEPT:
             self.compare_select_secondary_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
             self.secondary_file["name"] = dialog.get_filename()[::-1].split("/", 1)[0][::-1]
             self.secondary_file["route"] = dialog.get_filename()
