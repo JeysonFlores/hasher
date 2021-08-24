@@ -6,7 +6,7 @@ import HashView
 
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Gio
 
 
 BLOCK_SIZE = 65536
@@ -56,7 +56,7 @@ class MainWindow(Gtk.Window):
         self.settings = Gio.Settings(schema_id="com.github.jeysonflores.hasher")
 
         self.hashes_alg_combo.set_active(self.settings.get_int("algorithm"))
-        self.hashes_alg_combo.connect("selected", self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())))
+        self.hashes_alg_combo.connect("changed", self.on_algo_changed)
         button_combo = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL)
         button_combo_context = button_combo.get_style_context()
         button_combo_context.add_class("selection_data")
@@ -161,6 +161,9 @@ class MainWindow(Gtk.Window):
         self.add(self.stack)
 
         self.resize(600, 400)
+
+    def on_algo_changed(self, algo):
+        self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())
 
     def main_file_selection(self, button):
         dialog = Gtk.FileChooserNative.new("Please choose a file", self, Gtk.FileChooserAction.OPEN, "Open", "Cancel")
