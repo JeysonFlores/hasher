@@ -3,10 +3,30 @@
 import hashlib
 import gi
 import HashView 
+import locale, gettext, os
 
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, Gdk, Gio
+
+
+try:
+    current_locale, encoding = locale.getdefaultlocale()
+    current_locale = current_locale.split("_", 1)[0]
+    locale_path = os.path.join(
+        os.path.abspath(
+            os.path.dirname(__file__)
+        ), 
+        'locale'
+    )
+    translate = gettext.translation(
+        "hasher", 
+        locale_path, 
+        [current_locale] 
+    )
+    _ = translate.gettext
+except FileNotFoundError:
+    _ = str
 
 
 BLOCK_SIZE = 65536
@@ -32,7 +52,7 @@ class MainWindow(Gtk.Window):
         hashes_content_context = self.hashes_content.get_style_context()
         hashes_content_context.add_class("main_content")
 
-        self.hashes_select_file = Gtk.Button(label="Select File",image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
+        self.hashes_select_file = Gtk.Button(label=_("Select File"),image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
         self.hashes_select_file.connect("clicked", self.main_file_selection)
         hashes_select_file_context = self.hashes_select_file.get_style_context()
         hashes_select_file_context.add_class("suggested-action")
@@ -78,21 +98,21 @@ class MainWindow(Gtk.Window):
         compare_content_context = self.compare_content.get_style_context()
         compare_content_context.add_class("main_content")
 
-        self.compare_select_main_file = Gtk.Button(label="Select File",image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
+        self.compare_select_main_file = Gtk.Button(label=_("Select File"),image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
         self.compare_select_main_file.connect("clicked", self.main_file_selection)
         compare_select_main_file_context = self.compare_select_main_file.get_style_context()
         compare_select_main_file_context.add_class("highlighted_text")
         compare_select_main_file_context.add_class("flat_selection_data")
         self.compare_content.pack_start(self.compare_select_main_file, False, False, 0)
 
-        self.compare_select_secondary_file = Gtk.Button(label="Select File to Compare",image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
+        self.compare_select_secondary_file = Gtk.Button(label=_("Select File to Compare"),image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
         self.compare_select_secondary_file.connect("clicked", self.secondary_file_selection)
         compare_select_secondary_file_context = self.compare_select_secondary_file.get_style_context()
         compare_select_secondary_file_context.add_class("highlighted_text")
         compare_select_secondary_file_context.add_class("flat_selection_data")
         self.compare_content.pack_start(self.compare_select_secondary_file, False, False, 1)
 
-        self.compare_start = Gtk.Button(label="Compare!", can_focus=False, sensitive=False)
+        self.compare_start = Gtk.Button(label=_("Compare!"), can_focus=False, sensitive=False)
         self.compare_start.connect("clicked", self.compare_files)
         compare_start_context = self.compare_start.get_style_context()
         compare_start_context.add_class("suggested-action")
@@ -104,14 +124,14 @@ class MainWindow(Gtk.Window):
         compare_alert_context.add_class("icon_status")
         self.compare_content.pack_start(self.compare_alert, False, False, 3)
 
-        self.stack.add_titled(self.compare_content, "Compare", "Compare")
+        self.stack.add_titled(self.compare_content, _("Compare"), _("Compare"))
 
         #Verify Content 
         self.verify_content = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0, homogeneous = False, valign = Gtk.Align.CENTER)
         verify_content_context = self.verify_content.get_style_context()
         verify_content_context.add_class("main_content")
 
-        self.verify_select_main_file = Gtk.Button(label="Select File",image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
+        self.verify_select_main_file = Gtk.Button(label=_("Select File"),image=Gtk.Image(icon_name="document-open-symbolic", icon_size=Gtk.IconSize.BUTTON), always_show_image=True, can_focus=False)
         self.verify_select_main_file.connect("clicked", self.main_file_selection)
         verify_select_main_file_context = self.verify_select_main_file.get_style_context()
         verify_select_main_file_context.add_class("highlighted_text")
@@ -132,7 +152,7 @@ class MainWindow(Gtk.Window):
 
         self.verify_content.pack_start(verify_form, False, False, 2)
 
-        self.verify_start = Gtk.Button(label="Verify!", can_focus=False, sensitive=False)
+        self.verify_start = Gtk.Button(label=_("Verify!"), can_focus=False, sensitive=False)
         self.verify_start.connect("clicked", self.verify_hashes)
         verify_start_context = self.verify_start.get_style_context()
         verify_start_context.add_class("suggested-action")
@@ -144,7 +164,7 @@ class MainWindow(Gtk.Window):
         verify_alert_context.add_class("icon_status")
         self.verify_content.pack_start(self.verify_alert, False, False, 3)
 
-        self.stack.add_titled(self.verify_content, "Verify", "Verify")
+        self.stack.add_titled(self.verify_content, _("Verify"), _("Verify"))
 
 
         #HeaderBar Content
@@ -166,7 +186,7 @@ class MainWindow(Gtk.Window):
         self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())
 
     def main_file_selection(self, button):
-        dialog = Gtk.FileChooserNative.new("Please choose a file", self, Gtk.FileChooserAction.OPEN, "Open", "Cancel")
+        dialog = Gtk.FileChooserNative.new(_("Please choose a file"), self, Gtk.FileChooserAction.OPEN, _("Open"), _("Cancel"))
         response = dialog.run()
 
         if response == Gtk.ResponseType.ACCEPT:
@@ -233,7 +253,7 @@ class MainWindow(Gtk.Window):
         return file_hash.hexdigest()
 
     def secondary_file_selection(self, button):
-        dialog = Gtk.FileChooserNative.new("Please choose a file", self, Gtk.FileChooserAction.OPEN, "Open", "Cancel")
+        dialog = Gtk.FileChooserNative.new(_("Please choose a file"), self, Gtk.FileChooserAction.OPEN, _("Open"), _("Cancel"))
         response = dialog.run()
 
         if response == Gtk.ResponseType.ACCEPT:
