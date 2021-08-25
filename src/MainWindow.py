@@ -4,6 +4,7 @@ import hashlib
 import gi
 import HashView 
 import locale, gettext, os
+import threading
 
 gi.require_version('Gtk', '3.0')
 
@@ -30,6 +31,7 @@ except FileNotFoundError:
 
 
 BLOCK_SIZE = 65536
+FILE_HASH = ""
 
 class MainWindow(Gtk.Window):
 
@@ -225,7 +227,7 @@ class MainWindow(Gtk.Window):
                 self.hashes_result.text_view.set_text(main_file_hash)
 
 
-    def get_hash(self, alg, filename):
+    def get_hash(self, alg, filename, callback):
         if alg == "MD5":
             file_hash = hashlib.md5()
 
@@ -250,7 +252,9 @@ class MainWindow(Gtk.Window):
                         file_hash.update(fb)
                         fb = f.read(BLOCK_SIZE)
 
-        return file_hash.hexdigest()
+        FILE_HASH = file_hash.hexdigest()
+
+        callback()
 
     def secondary_file_selection(self, button):
         dialog = Gtk.FileChooserNative.new(_("Please choose a file"), self, Gtk.FileChooserAction.OPEN, _("Open"), _("Cancel"))
