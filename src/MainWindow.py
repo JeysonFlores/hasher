@@ -188,6 +188,9 @@ class MainWindow(Gtk.Window):
     def on_alg_changed(self, algo):
         self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())
 
+    def set_all_sensitive(self, enable):
+        return
+
     def main_file_selection_callback(self):
         self.main_file["value"] = self.FILE_HASH
         self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
@@ -212,10 +215,14 @@ class MainWindow(Gtk.Window):
                 self.hashes_result.alg_label.set_label("Calculating " + self.main_file["alg"] + " Hash")
                 self.hashes_result.text_view.set_text("")
 
-                thread = threading.Thread(target=self.get_hash, args=(self.main_file["alg"], self.main_file["route"], self.main_file_selection_callback))
-                thread.start()
+                self.get_hash(self.main_file["alg"], self.main_file["route"], self.main_file_selection_callback)
 
         dialog.destroy()                
+
+    def hashes_result_icon_selected_callback(self):
+        self.main_file["value"] = self.FILE_HASH
+        self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
+        self.hashes_result.text_view.set_text(self.FILE_HASH)
 
     def hashes_result_icon_selected(self, entry, icon_position, event):
         if icon_position == Gtk.EntryIconPosition.SECONDARY:
@@ -226,14 +233,13 @@ class MainWindow(Gtk.Window):
             if self.main_file["value"] != "":
                 self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
 
-                main_file_hash = self.get_hash(self.main_file["alg"], self.main_file["route"])
-
-                self.main_file["value"] = main_file_hash
-                self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
-                self.hashes_result.text_view.set_text(main_file_hash)
-
+                self.get_hash(self.main_file["alg"], self.main_file["route"], self.hashes_result_icon_selected_callback)
 
     def get_hash(self, alg, filename, callback):
+        thread = threading.Thread(target=self.get_hash_thread, args=(alg, filename, callback))
+        thread.start()
+
+    def get_hash_thread(self, alg, filename, callback):
         if alg == "MD5":
             file_hash = hashlib.md5()
 
@@ -252,6 +258,8 @@ class MainWindow(Gtk.Window):
         elif alg == "SHA512":
             file_hash = hashlib.sha512()
 
+        self.set_all_sensitive(False)
+
         with open(filename, 'rb') as f: 
                     fb = f.read(BLOCK_SIZE)
                     while len(fb) > 0:
@@ -260,6 +268,8 @@ class MainWindow(Gtk.Window):
 
         self.FILE_HASH = file_hash.hexdigest()
 
+        self.set_all_sensitive(True)
+
         callback()
 
     def secondary_file_selection(self, button):
@@ -267,19 +277,18 @@ class MainWindow(Gtk.Window):
         response = dialog.run()
 
         if response == Gtk.ResponseType.ACCEPT:
-            self.compare_select_secondary_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
-            self.secondary_file["name"] = dialog.get_filename()[::-1].split("/", 1)[0][::-1]
+            short_filename = dialog.get_filename()[::-1].split("/", 1)[0][::-1]
+            self.compare_select_secondary_file.set_label(short_filename)
+            self.secondary_file["name"] = short_filename
             self.secondary_file["route"] = dialog.get_filename()
 
             if self.main_file["name"] != "":
                 self.compare_start.set_sensitive(True)
 
         dialog.destroy()      
-        
-    def compare_files(self, button):
-        secondary_file_hash = self.get_hash(self.main_file["alg"], self.secondary_file["route"])
 
-        self.secondary_file["value"] = secondary_file_hash
+    def compare_files_callback(self):
+        self.secondary_file["value"] = self.FILE_HASH
 
         if self.secondary_file["value"] == self.main_file["value"]:
             self.compare_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
@@ -288,8 +297,14 @@ class MainWindow(Gtk.Window):
             self.compare_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
             self.compare_alert.set_visible(True)
 
+    def compare_files(self, button):
+        self.get_hash(self.main_file["alg"], self.secondary_file["route"], self.compare_files_callback)
+
     def verify_form_icon_selected(self, entry, icon_position, event):
         entry.set_text(self.clipboard.wait_for_text())
+
+    def verify_hashes_callback(self):
+        return
 
     def verify_hashes(self, button):
         if self.verify_form_entry.get_text() != "":
@@ -315,6 +330,5 @@ class MainWindow(Gtk.Window):
                     self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
                     self.verify_alert.set_visible(True)
                     return None
-            
             self.verify_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
             self.verify_alert.set_visible(True)
