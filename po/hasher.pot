@@ -1,0 +1,35 @@
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Select File"
+msgstr ""
+
+msgid "Select File to Compare"
+msgstr ""
+
+msgid "Compare!"
+msgstr ""
+
+msgid "Compare"
+msgstr ""
+
+msgid "Verify!"
+msgstr ""
+
+msgid "Verify"
+msgstr ""
+
+msgid "Please choose a file"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
