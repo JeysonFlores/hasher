@@ -4,13 +4,23 @@
 <h1 align="center">Hasher</h1>
 <h4 align="center">Hash, Compare and Verify your files</h4>
 
+<p align="center">
+  <a href="https://appcenter.elementary.io/com.github.jeysonflores.hasher"><img src="https://appcenter.elementary.io/badge.svg" alt="Get it on AppCenter" /></a>
+</p>
+
 | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-1.png) | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-2.png) |
 |------------------------------------------------------------------|------------------------------------------------------------------|
 | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-3.png) | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-4.png) |
 
 
 # Translations
-Currently there's no support for translations, however it's one of the post-release goals I want to achieve. When the translation support it's ready, in this section will be the instructions for contributing.
+In order to translate Hasher to a language you must add a folder with the language abbreviation (Example: **es**-Spanish, **pt**-Portuguese, **it**-Italian) 
+on the po/ directory. Inside it you must create another folder called LC_MESSAGES. Inside that last folder, you must add two files: one called hasher.po(text file) and the compiled hasher.mo file (Your .PO editor should generate this file automatically).
+Once you have done that, you must add those files to setup.py for installation. To do so, gotta add this to the install_data tuple:
+
+`('bin/hasher/locale/LANG_ABBREVIATION/LC_MESSAGES', ['po/LANG_ABBREVIATION/LC_MESSAGES/hasher.mo'])`
+
+`('bin/hasher/locale/LANG_ABBREVIATION/LC_MESSAGES', ['po/LANG_ABBREVIATION/LC_MESSAGES/hasher.po'])`
 
 # Dependencies
   - `granite (>= 0.6.0)`
