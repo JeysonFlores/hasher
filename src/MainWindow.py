@@ -89,6 +89,7 @@ class MainWindow(Gtk.Window):
 
         self.hashes_result = HashView.HashView()
         self.hashes_result.text_view.connect("icon-press", self.hashes_result_icon_selected)
+        self.hashes_result.text_view.set_sensitive(False)
         hashes_result_context = self.hashes_result.get_style_context()
         hashes_result_context.add_class("final_content")
         self.hashes_content.pack_start(self.hashes_result, False, True, 1)
@@ -187,6 +188,7 @@ class MainWindow(Gtk.Window):
 
     def on_alg_changed(self, algo):
         self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())
+        self.hashes_result.text_view.set_sensitive(True)
 
     def set_all_sensitive(self, enable):
         self.hashes_select_file.set_sensitive(enable)
@@ -203,10 +205,6 @@ class MainWindow(Gtk.Window):
         self.main_file["value"] = self.FILE_HASH
         self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
         self.hashes_result.text_view.set_text(self.FILE_HASH)
-
-        self.verify_start.set_sensitive(True)
-        if self.secondary_file["name"] != "":
-            self.compare_start.set_sensitive(True)
 
     def main_file_selection(self, button):
         dialog = Gtk.FileChooserNative.new(_("Please choose a file"), self, Gtk.FileChooserAction.OPEN, _("Open"), _("Cancel"))
@@ -238,18 +236,17 @@ class MainWindow(Gtk.Window):
                 self.clipboard.set_text(self.hashes_result.text_view.get_text(), -1)
 
         elif icon_position == Gtk.EntryIconPosition.PRIMARY:
-            if self.main_file["value"] != "":
-                self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
-
+            self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
             self.hashes_result.alg_label.set_label("Calculating " + self.main_file["alg"] + " Hash")
+            self.hashes_result.text_view.set_text("")
 
             self.get_hash(self.main_file["alg"], self.main_file["route"], self.hashes_result_icon_selected_callback)
 
     def get_hash(self, alg, filename, callback):
-        thread = threading.Thread(target=self.get_hash_thread, args=(alg, filename, callback))
+        thread = threading.Thread(target=self.get_hash_thread_function, args=(alg, filename, callback))
         thread.start()
 
-    def get_hash_thread(self, alg, filename, callback):
+    def get_hash_thread_function(self, alg, filename, callback):
         if alg == "MD5":
             file_hash = hashlib.md5()
 
@@ -298,6 +295,11 @@ class MainWindow(Gtk.Window):
                 self.hashes_result.text_view.set_text("")
                 self.compare_alert.set_visible(False)
 
+                if self.secondary_file["name"] != "":
+                    self.compare_start.set_sensitive(True)
+
+                self.get_hash(self.main_file["alg"], self.main_file["route"], self.main_file_selection_callback)
+
         dialog.destroy()
 
     def secondary_file_selection(self, button):
@@ -309,6 +311,8 @@ class MainWindow(Gtk.Window):
             self.compare_select_secondary_file.set_label(short_filename)
             self.secondary_file["name"] = short_filename
             self.secondary_file["route"] = dialog.get_filename()
+            self.compare_alert.set_visible(False)
+            self.secondary_file["value"] = ""
 
             if self.main_file["name"] != "":
                 self.compare_start.set_sensitive(True)
@@ -320,13 +324,18 @@ class MainWindow(Gtk.Window):
 
         if self.secondary_file["value"] == self.main_file["value"]:
             self.compare_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
-            self.compare_alert.set_visible(True)
         else:
             self.compare_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
-            self.compare_alert.set_visible(True)
+
+        self.compare_alert.set_visible(True)
 
     def compare_files(self, button):
         self.compare_alert.set_visible(False)
+        if self.secondary_file["value"] != "":
+            self.FILE_HASH = self.secondary_file["value"]
+            self.compare_files_callback()
+            return
+
         self.get_hash(self.main_file["alg"], self.secondary_file["route"], self.compare_files_callback)
 
     def verify_form_icon_selected(self, entry, icon_position, event):
