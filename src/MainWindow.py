@@ -31,9 +31,10 @@ except FileNotFoundError:
 
 
 BLOCK_SIZE = 65536
-FILE_HASH = ""
 
 class MainWindow(Gtk.Window):
+
+    FILE_HASH = ""
 
     def __init__(self):
         Gtk.Window.__init__(self)
@@ -188,9 +189,9 @@ class MainWindow(Gtk.Window):
         self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())
 
     def main_file_selection_callback(self):
-        self.main_file["value"] = FILE_HASH
+        self.main_file["value"] = self.FILE_HASH
         self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
-        self.hashes_result.text_view.set_text(FILE_HASH)
+        self.hashes_result.text_view.set_text(self.FILE_HASH)
 
         self.verify_start.set_sensitive(True)
         if self.secondary_file["name"] != "":
@@ -208,8 +209,10 @@ class MainWindow(Gtk.Window):
                 self.main_file["name"] = short_filename
                 self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
                 self.main_file["route"] = dialog.get_filename()
+                self.hashes_result.alg_label.set_label("Calculating " + self.main_file["alg"] + " Hash")
+                self.hashes_result.text_view.set_text("")
 
-                thread = Thread(target=get_hash, args=(self.main_file["alg"], self.main_file["route"], main_file_selection_callback))
+                thread = threading.Thread(target=self.get_hash, args=(self.main_file["alg"], self.main_file["route"], self.main_file_selection_callback))
                 thread.start()
 
         dialog.destroy()                
@@ -255,7 +258,7 @@ class MainWindow(Gtk.Window):
                         file_hash.update(fb)
                         fb = f.read(BLOCK_SIZE)
 
-        FILE_HASH = file_hash.hexdigest()
+        self.FILE_HASH = file_hash.hexdigest()
 
         callback()
 
