@@ -189,7 +189,15 @@ class MainWindow(Gtk.Window):
         self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())
 
     def set_all_sensitive(self, enable):
-        return
+        self.hashes_select_file.set_sensitive(enable)
+        self.hashes_alg_combo.set_sensitive(enable)
+        self.hashes_result.text_view.set_sensitive(enable)
+        self.compare_select_main_file.set_sensitive(enable)
+        self.compare_select_secondary_file.set_sensitive(enable)
+        self.compare_start.set_sensitive(enable)
+        self.verify_select_main_file.set_sensitive(enable)
+        self.verify_form_entry.set_sensitive(enable)
+        self.verify_start.set_sensitive(enable)
 
     def main_file_selection_callback(self):
         self.main_file["value"] = self.FILE_HASH
