@@ -249,6 +249,15 @@ class MainWindow(Gtk.Window):
         thread.start()
 
     def get_hash_thread_function(self, alg, filename, callback):
+        GLib.idle_add(self.set_all_sensitive, False)
+
+        hash_result = self.get_hash_thread_worker(alg, filename)
+
+        GLib.idle_add(self.set_all_sensitive, True)
+
+        GLib.idle_add(callback, hash_result);
+
+    def get_hash_thread_worker(self, alg, filename):
         if alg == "MD5":
             file_hash = hashlib.md5()
 
@@ -267,8 +276,6 @@ class MainWindow(Gtk.Window):
         elif alg == "SHA512":
             file_hash = hashlib.sha512()
 
-        GLib.idle_add(self.set_all_sensitive, False)
-
         with open(filename, 'rb') as f: 
                     fb = f.read(BLOCK_SIZE)
                     while len(fb) > 0:
@@ -277,9 +284,7 @@ class MainWindow(Gtk.Window):
 
         hash_result = file_hash.hexdigest()
 
-        GLib.idle_add(self.set_all_sensitive, True)
-
-        GLib.idle_add(callback, hash_result);
+        return hash_result
 
     def compare_file_selection(self, button):
         dialog = Gtk.FileChooserNative.new(_("Please choose a file"), self, Gtk.FileChooserAction.OPEN, _("Open"), _("Cancel"))
@@ -359,11 +364,17 @@ class MainWindow(Gtk.Window):
 
         dialog.destroy()
 
-    def verify_hashes_callback(self):
-        return
+    def verify_hashes_alert(self, success):
+        if success:
+            GLib.idle_add(self.verify_alert.set_from_icon_name, "emblem-default-symbolic", Gtk.IconSize.DND)
+        else:
+            GLib.idle_add(self.verify_alert.set_from_icon_name, "process-stop-symbolic", Gtk.IconSize.DND)
+        GLib.idle_add(self.verify_alert.set_visible, True)
+        GLib.idle_add(self.set_all_sensitive, True)
 
     def verify_hashes(self, button):
         self.verify_alert.set_visible(False)
+
         if self.verify_form_entry.get_text() != "":
             if self.main_file["value"] == self.verify_form_entry.get_text():
                 self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
@@ -381,12 +392,15 @@ class MainWindow(Gtk.Window):
 
             algorithms.remove(self.main_file["alg"])
 
-            for alg in algorithms:
-                #hash = self.get_hash(alg, self.main_file["route"])
-                hash = "TODO"
-                if hash == self.verify_form_entry.get_text():
-                    self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
-                    self.verify_alert.set_visible(True)
-                    return None
-            self.verify_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
-            self.verify_alert.set_visible(True)
+            thread = threading.Thread(target=self.verify_hashes_thread_function, args=(algorithms, self.main_file["route"], self.verify_form_entry.get_text()))
+            thread.start()
+
+    def verify_hashes_thread_function(self, algorithms, filename, verify_hash):
+        GLib.idle_add(self.set_all_sensitive, False)
+        for alg in algorithms:
+            hash_result = self.get_hash_thread_worker(alg, filename)
+            if hash_result == verify_hash:
+                self.verify_hashes_alert(True)
+                return
+        self.verify_hashes_alert(False)
+
