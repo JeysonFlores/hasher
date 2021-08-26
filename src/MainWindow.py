@@ -4,10 +4,11 @@ import hashlib
 import gi
 import HashView 
 import locale, gettext, os
+import threading
 
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import Gtk, Gdk, Gio, GLib
 
 
 try:
@@ -39,7 +40,7 @@ class MainWindow(Gtk.Window):
         context = self.get_style_context()
         context.add_class ("rounded")
 
-        self.main_file = {"name": "", "route": "", "alg": "", "value": ""}
+        self.main_file = {"name": "", "route": "", "alg": "", "value": "", "to_verify": ""}
         self.secondary_file = {"name": "", "route": "", "alg": "", "value": ""}
 
         self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
@@ -113,7 +114,7 @@ class MainWindow(Gtk.Window):
         self.compare_content.pack_start(self.compare_select_secondary_file, False, False, 1)
 
         self.compare_start = Gtk.Button(label=_("Compare!"), can_focus=False, sensitive=False)
-        self.compare_start.connect("clicked", self.compare_files)
+        self.compare_start.connect("clicked", self.on_compare_start_clicked)
         compare_start_context = self.compare_start.get_style_context()
         compare_start_context.add_class("suggested-action")
         compare_start_context.add_class("small_content")
@@ -153,7 +154,7 @@ class MainWindow(Gtk.Window):
         self.verify_content.pack_start(verify_form, False, False, 2)
 
         self.verify_start = Gtk.Button(label=_("Verify!"), can_focus=False, sensitive=False)
-        self.verify_start.connect("clicked", self.verify_hashes)
+        self.verify_start.connect("clicked", self.on_verify_start_clicked)
         verify_start_context = self.verify_start.get_style_context()
         verify_start_context.add_class("suggested-action")
         verify_start_context.add_class("small_content")
@@ -182,8 +183,40 @@ class MainWindow(Gtk.Window):
 
         self.resize(600, 400)
 
+
     def on_alg_changed(self, algo):
         self.settings.set_int("algorithm", self.hashes_alg_combo.get_active())
+
+    def deactivate_widgets(self):
+        self.hashes_alg_combo.set_sensitive(False)
+        self.hashes_select_file.set_sensitive(False)
+        self.hashes_result.text_view.set_sensitive(False)
+        self.compare_select_main_file.set_sensitive(False)
+        self.compare_select_secondary_file.set_sensitive(False)
+        self.compare_start.set_sensitive(False)
+        self.verify_select_main_file.set_sensitive(False)
+        self.verify_start.set_sensitive(False)
+
+    def activate_widgets(self):
+        self.hashes_alg_combo.set_sensitive(True)
+        self.hashes_select_file.set_sensitive(True)
+        self.hashes_result.text_view.set_sensitive(True)
+        self.compare_select_main_file.set_sensitive(True)
+        self.compare_select_secondary_file.set_sensitive(True)
+        self.verify_select_main_file.set_sensitive(True)
+        self.verify_start.set_sensitive(True)
+
+        self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
+        self.hashes_result.text_view.set_text(self.main_file["value"])
+
+        if self.secondary_file["name"] != "":
+            self.compare_start.set_sensitive(True)
+
+
+    def hash_operation_thread(self):
+        self.main_file["value"] = self.get_hash(self.main_file["alg"], self.main_file["route"])
+
+        GLib.idle_add(self.activate_widgets)
 
     def main_file_selection(self, button):
         dialog = Gtk.FileChooserNative.new(_("Please choose a file"), self, Gtk.FileChooserAction.OPEN, _("Open"), _("Cancel"))
@@ -196,16 +229,9 @@ class MainWindow(Gtk.Window):
                 self.main_file["name"] = dialog.get_filename()[::-1].split("/", 1)[0][::-1]
                 self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
                 self.main_file["route"] = dialog.get_filename()
-                self.verify_start.set_sensitive(True)
-
-                main_file_hash = self.get_hash(self.main_file["alg"], self.main_file["route"])
-
-                self.main_file["value"] = main_file_hash
-                self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
-                self.hashes_result.text_view.set_text(main_file_hash)
-
-                if self.secondary_file["name"] != "":
-                    self.compare_start.set_sensitive(True)
+                self.deactivate_widgets()
+                self.thread = threading.Thread(target=self.hash_operation_thread)
+                self.thread.start()
 
         dialog.destroy()                
 
@@ -217,13 +243,9 @@ class MainWindow(Gtk.Window):
         elif icon_position == Gtk.EntryIconPosition.PRIMARY:
             if self.main_file["value"] != "":
                 self.main_file["alg"] = self.hashes_alg_combo.get_active_text()
-
-                main_file_hash = self.get_hash(self.main_file["alg"], self.main_file["route"])
-
-                self.main_file["value"] = main_file_hash
-                self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
-                self.hashes_result.text_view.set_text(main_file_hash)
-
+                self.deactivate_widgets()
+                self.thread = threading.Thread(target=self.hash_operation_thread)
+                self.thread.start()
 
     def get_hash(self, alg, filename):
         if alg == "MD5":
@@ -252,6 +274,7 @@ class MainWindow(Gtk.Window):
 
         return file_hash.hexdigest()
 
+
     def secondary_file_selection(self, button):
         dialog = Gtk.FileChooserNative.new(_("Please choose a file"), self, Gtk.FileChooserAction.OPEN, _("Open"), _("Cancel"))
         response = dialog.run()
@@ -260,17 +283,15 @@ class MainWindow(Gtk.Window):
             self.compare_select_secondary_file.set_label(dialog.get_filename()[::-1].split("/", 1)[0][::-1])
             self.secondary_file["name"] = dialog.get_filename()[::-1].split("/", 1)[0][::-1]
             self.secondary_file["route"] = dialog.get_filename()
+            self.compare_alert.set_from_icon_name("", Gtk.IconSize.DND)
+            self.compare_alert.set_visible(False)
 
             if self.main_file["name"] != "":
                 self.compare_start.set_sensitive(True)
 
         dialog.destroy()      
-        
-    def compare_files(self, button):
-        secondary_file_hash = self.get_hash(self.main_file["alg"], self.secondary_file["route"])
 
-        self.secondary_file["value"] = secondary_file_hash
-
+    def compare_operation(self):
         if self.secondary_file["value"] == self.main_file["value"]:
             self.compare_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
             self.compare_alert.set_visible(True)
@@ -278,14 +299,44 @@ class MainWindow(Gtk.Window):
             self.compare_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
             self.compare_alert.set_visible(True)
 
+    def compare_operation_thread(self):
+        self.secondary_file["value"] = self.get_hash(self.main_file["alg"], self.secondary_file["route"])
+        GLib.idle_add(self.activate_widgets)
+        GLib.idle_add(self.compare_operation)
+
+    def on_compare_start_clicked(self, button):
+        self.compare_alert.set_from_icon_name("image-loading-symbolic", Gtk.IconSize.DND)
+        self.compare_alert.set_visible(True)
+        self.deactivate_widgets()
+        self.thread = threading.Thread(target=self.compare_operation_thread)
+        self.thread.start()
+
+
     def verify_form_icon_selected(self, entry, icon_position, event):
         entry.set_text(self.clipboard.wait_for_text())
 
-    def verify_hashes(self, button):
+    def on_verify_start_clicked(self, button):
         if self.verify_form_entry.get_text() != "":
-            if self.main_file["value"] == self.verify_form_entry.get_text():
-                self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
-                self.verify_alert.set_visible(True)
+            self.main_file["to_verify"] = self.verify_form_entry.get_text()
+            self.verify_alert.set_from_icon_name("image-loading-symbolic", Gtk.IconSize.DND)
+            self.compare_alert.set_visible(True)
+            self.deactivate_widgets()
+            self.thread = threading.Thread(target=self.verify_operation_thread)
+            self.thread.start()
+
+    def verify_operation(self, matches):
+        if matches == True:
+            self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
+            self.verify_alert.set_visible(True)
+        elif matches == False:
+            self.verify_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
+            self.verify_alert.set_visible(True)
+        GLib.idle_add(self.activate_widgets)
+
+    def verify_operation_thread(self):
+        if self.main_file["to_verify"] != "":
+            if self.main_file["value"] == self.main_file["to_verify"]:
+                GLib.idle_add(self.verify_operation, True)
                 return None
 
             algorithms = [
@@ -301,10 +352,8 @@ class MainWindow(Gtk.Window):
 
             for alg in algorithms:
                 hash = self.get_hash(alg, self.main_file["route"])
-                if hash == self.verify_form_entry.get_text():
-                    self.verify_alert.set_from_icon_name("emblem-default-symbolic", Gtk.IconSize.DND)
-                    self.verify_alert.set_visible(True)
+                if hash == self.main_file["to_verify"]:
+                    GLib.idle_add(self.verify_operation, True)
                     return None
             
-            self.verify_alert.set_from_icon_name("process-stop-symbolic", Gtk.IconSize.DND)
-            self.verify_alert.set_visible(True)
+            GLib.idle_add(self.verify_operation, False)
