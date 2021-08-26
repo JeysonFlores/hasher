@@ -34,6 +34,8 @@ BLOCK_SIZE = 65536
 
 class MainWindow(Gtk.Window):
 
+    FILE_HASH = ""
+
     def __init__(self):
         Gtk.Window.__init__(self)
 
@@ -201,6 +203,7 @@ class MainWindow(Gtk.Window):
 
     def main_file_selection_callback(self, hash_result):
         self.main_file["value"] = hash_result
+        self.secondary_file["value"] = ""
         self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
         self.hashes_result.text_view.set_text(self.main_file["value"])
 
@@ -225,6 +228,7 @@ class MainWindow(Gtk.Window):
 
     def hashes_result_icon_selected_callback(self, hash_result):
         self.main_file["value"] = hash_result
+        self.secondary_file["value"] = ""
         self.hashes_result.alg_label.set_label(self.main_file["alg"] + " Hash")
         self.hashes_result.text_view.set_text(self.main_file["value"])
 
@@ -328,7 +332,6 @@ class MainWindow(Gtk.Window):
 
     def compare_files(self, button):
         self.compare_alert.set_visible(False)
-
         if self.secondary_file["value"] != "":
             self.compare_files_callback(self.secondary_file["value"])
             return
