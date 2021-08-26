@@ -44,6 +44,8 @@
 		  <p>Improvements:</p>
 		  <ul>
 			  <li>Spanish Translation</li>
+			  <li>App no longer freezes while loading a heavy file or performing a comparison/verification.</li>
+			  <li>Code cleaning</li>
 		  </ul>
 		</description>
 	</release>
