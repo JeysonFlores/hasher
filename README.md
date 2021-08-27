@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/fleury08/prettifier/blob/master/LICENSE">
+  <a href="https://github.com/JeysonFlores/hasher/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-GPL3.0-blue.svg?style=for-the-badge">
   </a>
-  <a href="https://github.com/fleury08/prettifier/releases">
+  <a href="https://github.com/JeysonFlores/hasher/releases">
     <img src="https://img.shields.io/badge/Release-v%201.0.2-blue.svg?style=for-the-badge">
   </a>
 </p>
