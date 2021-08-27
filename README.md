@@ -8,6 +8,15 @@
   <a href="https://appcenter.elementary.io/com.github.jeysonflores.hasher"><img src="https://appcenter.elementary.io/badge.svg" alt="Get it on AppCenter" /></a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/fleury08/prettifier/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/License-GPL3.0-blue.svg?style=for-the-badge">
+  </a>
+  <a href="https://github.com/fleury08/prettifier/releases">
+    <img src="https://img.shields.io/badge/Release-v%201.0.2-blue.svg?style=for-the-badge">
+  </a>
+</p>
+
 | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-1.png) | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-2.png) |
 |------------------------------------------------------------------|------------------------------------------------------------------|
 | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-3.png) | ![Screenshot](https://github.com/JeysonFlores/hasher/blob/main/data/assets/screenshots/screenshot-4.png) |
@@ -27,6 +36,7 @@ Once you have done that, you must add those files to setup.py for installation. 
   - `libgtk-3-dev (>= 3.10)`
   - `python3 (>= 3.6)`
   - `python3-gi (3.36.0-1)`
+  -  `gettext`
 
 # Building
   ```
@@ -36,10 +46,11 @@ Once you have done that, you must add those files to setup.py for installation. 
   ```
   
  # Contributions
-  ## Code
+  ## Code 
    -  [Vishal Rao](https://github.com/vjr) - Accessibility enhancements
   ## Design
    -  [Vishal Rao](https://github.com/vjr) - Accessibility enhancements
-  
+  ## Translations
+   - 🇪🇸 - 🇲🇽 Spanish Translation by [Jeyson Antonio Flores Deras](https://github.com/JeysonFlores)
 # Extras
    - Thanks to [Mirko Brombin](https://github.com/mirkobrombin) for the [template](https://github.com/mirkobrombin/ElementaryPython).
