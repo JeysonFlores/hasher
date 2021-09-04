@@ -18,12 +18,14 @@ class Application(Gtk.Application):
         self.win = wn.MainWindow()
         self.win.connect("delete-event", self.delete_window)
 
-        granite_settings = Granite.Settings()
-        gtk_settings = Gtk.Settings.get_default()
+        self.granite_settings = Granite.Settings()
+        self.gtk_settings = Gtk.Settings.get_default()
 
         #Since complex signals in Python are quite complicated, Dark Mode is determined at launch time(may change later)
-        if granite_settings.get_prefers_color_scheme() == Granite.SettingsColorScheme.DARK:
-            gtk_settings.set_property("gtk-application-prefer-dark-theme", True) 
+        if self.granite_settings.get_prefers_color_scheme() == Granite.SettingsColorScheme.DARK:
+            self.gtk_settings.set_property("gtk-application-prefer-dark-theme", True) 
+
+        self.granite_settings.connect("notify::prefers-color-scheme", self.on_color_scheme_changed)
 
         launch_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
@@ -52,6 +54,12 @@ class Application(Gtk.Application):
         self.settings.set_int("window-height", self.win.get_size().height)
         
         Gtk.main_quit()
+
+    def on_color_scheme_changed(self, settings, params):
+        if self.granite_settings.get_prefers_color_scheme() == Granite.SettingsColorScheme.DARK:
+            self.gtk_settings.set_property("gtk-application-prefer-dark-theme", True)
+        else:
+            self.gtk_settings.set_property("gtk-application-prefer-dark-theme", False)
 
 app = Application()
 
