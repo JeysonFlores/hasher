@@ -2,7 +2,7 @@
 Name=Hasher
 GenericName=Hasher
 Comment=Hash your files
-Categories=Utility;
+Categories=FileTools;Security;System;Utility;
 Exec=com.github.jeysonflores.hasher
 Icon=com.github.jeysonflores.hasher
 Terminal=false
