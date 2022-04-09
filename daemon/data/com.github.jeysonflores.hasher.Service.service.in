@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.github.jeysonflores.hasher.Service
+Exec=@libexecdir@/com.github.jeysonflores.hasher.Service

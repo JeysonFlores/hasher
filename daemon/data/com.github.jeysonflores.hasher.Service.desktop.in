@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=com.github.jeysonflores.hasher.Service
+Comment=Hasher's Service
+Exec=@libexecdir@/github.jeysonflores.hasher.Service
+X-GNOME-Autostart-Delay=10
+StartupNotify=false
+NoDisplay=true
+Type=Application
